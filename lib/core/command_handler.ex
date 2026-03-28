@@ -24,11 +24,9 @@ defmodule Bot.Core.CommandHandler do
 
     query = focused_option.value || ""
 
-    choices = get_language_choices(query)
-
     Nostrum.Api.create_interaction_response(interaction, %{
       type: 8,
-      data: %{choices: choices}
+      data: %{choices: get_language_choices(query)}
     })
   end
 

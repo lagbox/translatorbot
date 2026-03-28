@@ -16,6 +16,25 @@ defmodule Bot.Commands.SetLanguage do
     %Nostrum.Struct.Interaction{user: user} = interaction
     [%{name: "language", value: lang}] = interaction.data.options
 
+    case Translator.Languages.get(lang) do
+      nil -> do_bad_language(lang)
+      langfull -> do_set_language(user, lang, langfull)
+    end
+  end
+
+  defp do_bad_language(lang) do
+    embed =
+      %Embed{}
+      |> Embed.put_color(0xC01C28)
+      |> Embed.put_title("\"#{lang}\" is not an available language option. Please try again.")
+
+    [
+      embeds: [embed],
+      ephemeral?: true
+    ]
+  end
+
+  defp do_set_language(user, lang, langfull) do
     UserRepo.put(
       user.id,
       user
@@ -23,13 +42,13 @@ defmodule Bot.Commands.SetLanguage do
       |> UserRepo.add_language(lang)
     )
 
-    langfull = Map.get(Translator.get_languages(), lang)
-    content = "Your language has been set to #{langfull} (#{String.upcase(lang)})."
-
     embed =
       %Embed{}
       |> Embed.put_color(0x2EC27E)
-      |> Embed.put_title(content)
+      |> Embed.put_title("Your language has been successfully set.")
+      |> Embed.put_description(
+        "Your language is set to **#{langfull} (#{String.upcase(lang)})**."
+      )
 
     [
       embeds: [embed],

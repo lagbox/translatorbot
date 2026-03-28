@@ -23,7 +23,6 @@ defmodule Bot.MixProject do
   defp deps do
     [
       {:req, "~> 0.4"},
-      # {:nostrum, "~> 0.9.1"},
       {:nosedrum, git: "https://github.com/jchristgit/nosedrum", branch: "master"}
     ]
   end

@@ -1,15 +1,11 @@
 defmodule Translator.HTTPClient do
-  @base_url Application.compile_env(:translator, __MODULE__)[:base_url]
-
-  def base_url(), do: @base_url
-
   def new(opts \\ []) do
     default_headers = [
       {"content-type", "application/json"}
     ]
 
     Req.new(
-      base_url: @base_url,
+      base_url: Application.get_env(:bot, :translator)[:base_url],
       headers: default_headers ++ Keyword.get(opts, :headers, []),
       receive_timeout: 5_000,
       connect_options: [timeout: 5_000],

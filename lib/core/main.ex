@@ -5,7 +5,8 @@ defmodule Bot.Core.Main do
     children = [
       Nosedrum.Storage.Dispatcher,
       Bot.Core.CommandHandler,
-      Bot.Core.UserRepo
+      Bot.Core.UserRepo,
+      Translator.Languages
     ]
 
     options = [strategy: :one_for_one, name: Bot.Supervisor]

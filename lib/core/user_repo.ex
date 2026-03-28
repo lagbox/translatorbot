@@ -16,7 +16,7 @@ defmodule Bot.Core.UserRepo do
   end
 
   def add_language(user, language) do
-    user |> Map.put(:language, language)
+    Map.put(user, :language, language)
   end
 
   def init(state), do: {:ok, state}

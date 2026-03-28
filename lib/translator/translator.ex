@@ -1,18 +1,13 @@
 defmodule Translator do
-  @languages Translator.API.get_languages()
-             |> elem(1)
-             |> Enum.map(fn x -> {x["code"], x["name"]} end)
-             |> Enum.into(%{})
-
   def invertlangs do
-    @languages
+    Translator.Languages.get()
     |> Map.new(fn {k, v} -> {v, k} end)
   end
 
-  def get_languages, do: @languages
+  def get_languages, do: Translator.Languages.get()
 
   def language_by_code(code) do
-    # Enum.find()
+    Translator.Languages.get(code)
   end
 
   def translate(message, target) do

@@ -31,14 +31,14 @@ defmodule Bot.Commands.Translate do
              "detectedLanguage" => %{"language" => source}
            }} = Translator.translate(message, user.language)
 
-          sourcefull = Map.get(Translator.get_languages(), source)
-          userfull = Map.get(Translator.get_languages(), user.language)
+          sourcefull = Translator.Languages.get(source)
+          userfull = Translator.Languages.get(user.language)
 
           %Embed{}
+          |> Embed.put_color(0x3498DB)
           |> Embed.put_description(
             "> #{translated}\nFrom #{sourcefull} (#{String.upcase(source)}) To #{userfull} (#{String.upcase(user.language)})"
           )
-          |> Embed.put_color(0x3498DB)
 
           # |> Embed.put_title(translated)
           # |> Embed.put_field("Something", "something", true)
