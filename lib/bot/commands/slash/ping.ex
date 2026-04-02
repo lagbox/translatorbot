@@ -1,4 +1,4 @@
-defmodule Bot.Commands.Ping do
+defmodule Bot.Commands.Slash.Ping do
   require Logger
   @behaviour Nosedrum.ApplicationCommand
 
@@ -8,7 +8,7 @@ defmodule Bot.Commands.Ping do
   def description(), do: "Hello? is there anybody in there?"
 
   @impl true
-  def command(_interaction), do: [content: "pong!"]
+  def command(_interaction), do: [content: "**🏓** ... pong!"]
 
   @impl true
   def type(), do: :slash

@@ -15,7 +15,7 @@ defmodule Bot.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Bot.Core.Main, []}
+      mod: {Application.Main, []}
     ]
   end
 

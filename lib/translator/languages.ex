@@ -52,7 +52,7 @@ defmodule Translator.Languages do
 
   defp load_and_cache do
     langs =
-      case Translator.API.get_languages() do
+      case Translator.API.languages() do
         {:ok, langs} ->
           Enum.map(langs, fn x -> {x["code"], x["name"]} end)
 
@@ -64,7 +64,7 @@ defmodule Translator.Languages do
     case :persistent_term.get(@key, %{}) do
       # cool
       ^langs -> :ok
-      _old -> :persistent_term.put(@key, langs)
+      _ -> :persistent_term.put(@key, langs)
     end
   end
 

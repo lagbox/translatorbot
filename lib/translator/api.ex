@@ -1,19 +1,24 @@
 defmodule Translator.API do
   alias Translator.HTTPClient
 
-  def get_languages() do
+  def languages() do
     HTTPClient.new()
     |> HTTPClient.get("languages")
   end
 
-  def get_translation(message, target) do
+  def translate(message, target, ""), do: translate(message, target)
+  def translate(message, target, nil), do: translate(message, target)
+
+  def translate(message, target, source) do
     data = %{
       q: message,
-      source: "auto",
-      target: target
+      target: target,
+      source: source
     }
 
     HTTPClient.new()
     |> HTTPClient.post("translate", data)
   end
+
+  def translate(message, target), do: translate(message, target, "auto")
 end

@@ -1,6 +1,9 @@
-defmodule Bot.Commands.EightBall do
+defmodule Bot.Commands.Slash.EightBall do
   require Logger
   @behaviour Nosedrum.ApplicationCommand
+
+  alias Nostrum.Struct.Embed
+
   @responses [
     "It is certain.",
     "Reply hazy, try again.",
@@ -30,7 +33,18 @@ defmodule Bot.Commands.EightBall do
   def description(), do: "Seek the wisdom of AI"
 
   @impl true
-  def command(_interaction), do: [content: Enum.random(@responses)]
+  def command(interaction) do
+    [%{name: "message", value: question}] = interaction.data.options
+
+    embed =
+      %Embed{}
+      |> Embed.put_color(0x2EC27E)
+      |> Embed.put_description("> #{question}\n **🎱 #{Enum.random(@responses)} **")
+
+    [
+      embeds: [embed]
+    ]
+  end
 
   @impl true
   def type(), do: :slash
