@@ -1,17 +1,16 @@
 defmodule Bot.Commands.ReactionTranslation do
   require Logger
 
-  alias Translator.UserPrefsMnesia
+  alias Bot.Core.DiscordUser
   alias Nostrum.Api.Message
 
-  alias Bot.Core.DiscordUser
-
   alias Translator.{
+    Embed,
+    Language.Flags,
     Languages,
-    LanguageFlags,
-    LibreTranslate,
-    TranslationCache,
-    Cooldown
+    Persistence.UserPrefsMnesia,
+    System.Cooldown,
+    System.MessageLifecycle
   }
 
   @embed_color 0x5865F2
@@ -20,7 +19,7 @@ defmodule Bot.Commands.ReactionTranslation do
     user_id = reaction.user_id
 
     if user_id != Nostrum.Cache.Me.get().id do
-      case LanguageFlags.codes_for_flag(emoji) do
+      case Flags.codes_for_flag(emoji) do
         [] ->
           :ignore
 
@@ -50,42 +49,44 @@ defmodule Bot.Commands.ReactionTranslation do
       lang = target_lang
       user = DiscordUser.fetch(user_id)
 
-      case TranslationCache.get(message.content, lang) do
-        nil ->
-          case LibreTranslate.translate(message.content, lang) do
-            {:ok, result} ->
-              TranslationCache.put(message.content, lang, result)
+      case Translator.translate(message.content, lang) do
+        {:ok, result} ->
+          UserPrefsMnesia.bump_usage(user_id, lang)
 
-              case send_translation(reaction, message, result, lang, user) do
-                {:ok, _} ->
-                  remove_user_reaction(reaction)
-
-                _ ->
-                  :ignore
-              end
-
-            _ ->
-              error(reaction)
-          end
-
-        cached ->
-          case send_translation(reaction, message, cached, lang, user) do
-            {:ok, _} ->
+          case send_translation(reaction, message, result, lang, user) do
+            {:ok, reply} ->
               remove_user_reaction(reaction)
+              auto_delete(reply)
 
             _ ->
               :ignore
           end
+
+        _ ->
+          error(reaction)
       end
     else
       _ -> :ignore
     end
   end
 
-  defp send_translation(reaction, message, %{translated: t, detected: s}, lang, user) do
+  defp auto_delete(message) do
+    MessageLifecycle.schedule_delete(message)
+  end
+
+  defp send_translation(reaction, message, %{translated: t, detected: s} = result, lang, user) do
     UserPrefsMnesia.bump_usage(user.id, lang)
 
     embed = build_embed(message, t, s, lang, user, reaction.emoji.name)
+
+    # embed =
+    #   # Embed.translation(
+    #   #   message,
+    #   #   result,
+    #   #   lang,
+    #   #   user,
+    #   #   reaction.emoji.name
+    #   # )
 
     Message.create(
       reaction.channel_id,
@@ -155,13 +156,8 @@ defmodule Bot.Commands.ReactionTranslation do
     "https://cdn.discordapp.com/avatars/#{user.id}/#{user.avatar}.png"
   end
 
-  # defp truncate(text, max) do
-  #   if String.length(text) > max do
-  #     String.slice(text, 0, max) <> "..."
-  #   else
-  #     text
-  #   end
-  # end
+  # defp truncate(text, max),
+  #   do: if(String.length(text) > max, do: String.slice(text, 0, max) <> "...", else: text)
 
   defp error(reaction) do
     Message.create(reaction.channel_id, content: "❌ Translation failed.")

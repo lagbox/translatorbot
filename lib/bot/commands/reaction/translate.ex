@@ -1,8 +1,9 @@
 defmodule Bot.Commands.Reaction.Translate do
-  alias Translator.LanguageFlags
+  alias Translator.Language.Flags
 
   def match?(%{emoji: %{name: emoji}}) do
-    LanguageFlags.codes_for_flag(emoji) != []
+    Flags.is_flag?(emoji) &&
+      Flags.codes_for_flag(emoji) != []
   end
 
   def match?(_), do: false

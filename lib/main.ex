@@ -4,14 +4,14 @@ defmodule Application.Main do
   def start(_type, _args) do
     init_mnesia()
 
+    Translator.Cache.TranslationCache.init()
+
     children = [
-      Nosedrum.Storage.Dispatcher,
       Bot.Core.CommandHandler,
-      # Bot.Core.UserRepo,
+      Nosedrum.Storage.Dispatcher,
       Translator.Languages,
-      # Translator.UserPrefs,
-      Translator.TranslationCache,
-      Translator.Cooldown
+      Translator.System.Cooldown,
+      Translator.System.MessageLifecycle
     ]
 
     options = [strategy: :one_for_one, name: Bot.Supervisor]
@@ -29,7 +29,7 @@ defmodule Application.Main do
 
     :mnesia.start()
 
-    Translator.UserPrefsMnesia.init()
+    Translator.Persistence.UserPrefsMnesia.init()
 
     :mnesia.wait_for_tables([:user_langs], 5_000)
   end
