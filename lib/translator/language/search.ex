@@ -1,6 +1,6 @@
-defmodule Translator.LanguageSearch do
-  alias Translator.LanguageFlags
-  alias Translator.UserPrefsMnesia
+defmodule Translator.Language.Search do
+  alias Translator.Language.Flags
+  alias Translator.Persistence.UserPrefsMnesia
 
   @popular ~w(en es fr de zh ja ko pt ru)
 
@@ -45,7 +45,7 @@ defmodule Translator.LanguageSearch do
   end
 
   defp format({_, %{"name" => name, "code" => code}}) do
-    flags = LanguageFlags.flags_for(code)
+    flags = Flags.flags_for(code)
 
     %{
       name: "#{flags} #{name} (#{code})",

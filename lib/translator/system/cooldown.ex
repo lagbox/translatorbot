@@ -1,4 +1,4 @@
-defmodule Translator.Cooldown do
+defmodule Translator.System.Cooldown do
   use GenServer
 
   @ttl 3_000

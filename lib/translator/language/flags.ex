@@ -1,4 +1,4 @@
-defmodule Translator.LanguageFlags do
+defmodule Translator.Language.Flags do
   @map %{
     "en" => ["US", "GB"],
     "es" => ["ES", "MX"],
@@ -133,19 +133,21 @@ defmodule Translator.LanguageFlags do
 
   # flag → languages (weighted)
   def codes_for_flag(flag) do
-    langs =
-      reverse_map()
-      |> Map.get(flag, [])
+    case langs = reverse_map() |> Map.get(flag, []) do
+      [] ->
+        []
 
-    country = flag_to_country(flag)
-    priority = Map.get(@flag_priority, country, [])
+      _ ->
+        country = flag_to_country(flag)
+        priority = Map.get(@flag_priority, country, [])
 
-    Enum.sort_by(langs, fn lang ->
-      case Enum.find_index(priority, &(&1 == lang)) do
-        nil -> 999
-        idx -> idx
-      end
-    end)
+        Enum.sort_by(langs, fn lang ->
+          case Enum.find_index(priority, &(&1 == lang)) do
+            nil -> 999
+            idx -> idx
+          end
+        end)
+    end
   end
 
   # multi-flag string → merged languages
@@ -154,6 +156,11 @@ defmodule Translator.LanguageFlags do
     |> split_flags()
     |> Enum.flat_map(&codes_for_flag/1)
     |> Enum.uniq()
+  end
+
+  def is_flag?(emoji) do
+    String.match?(emoji, ~r/[🇦-🇿]{2}|🌐/u)
+    # String.match?(emoji, ~r/[\x{1F1E6}-\x{1F1FF}]{2}|🌐/u)
   end
 
   defp reverse_map do

@@ -1,4 +1,4 @@
-defmodule Translator.UserPrefsMnesia do
+defmodule Translator.Persistence.UserPrefsMnesia do
   require Logger
   @table :user_langs
 
