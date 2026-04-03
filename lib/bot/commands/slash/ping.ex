@@ -5,7 +5,7 @@ defmodule Bot.Commands.Slash.Ping do
   def name(), do: "ping"
 
   @impl true
-  def description(), do: "Hello? is there anybody in there?"
+  def description(), do: "Hello? Is there anybody in there?"
 
   @impl true
   def command(_interaction), do: [content: "**🏓** ... pong!"]

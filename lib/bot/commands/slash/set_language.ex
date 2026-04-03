@@ -1,7 +1,8 @@
 defmodule Bot.Commands.Slash.SetLanguage do
   @behaviour Nosedrum.ApplicationCommand
 
-  alias Nostrum.Struct.Embed
+  alias Nostrum.Struct.{Embed, Interaction}
+  alias Translator.{Languages, Persistence.UserPrefsMnesia}
 
   def name(), do: "set_language"
 
@@ -12,12 +13,12 @@ defmodule Bot.Commands.Slash.SetLanguage do
 
   @impl true
   def command(interaction) do
-    %Nostrum.Struct.Interaction{user: user} = interaction
+    %Interaction{user: user} = interaction
     [%{name: "language", value: lang}] = interaction.data.options
 
     # replace with some better validation system
     embed =
-      case Translator.Languages.get(lang) do
+      case Languages.get(lang) do
         nil -> do_bad_language(lang)
         langfull -> do_set_language(user, lang, langfull)
       end
@@ -35,7 +36,7 @@ defmodule Bot.Commands.Slash.SetLanguage do
   end
 
   defp do_set_language(user, lang, langfull) do
-    Translator.UserPrefsMnesia.set_preferred(user.id, lang)
+    UserPrefsMnesia.set_preferred(user.id, lang)
 
     %Embed{}
     |> Embed.put_color(0x2EC27E)

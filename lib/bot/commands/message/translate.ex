@@ -1,8 +1,8 @@
 defmodule Bot.Commands.Message.Translate do
   @behaviour Nosedrum.ApplicationCommand
 
-  alias Translator.UserPrefsMnesia
-  alias Nostrum.Struct.Embed
+  alias Translator.Persistence.UserPrefsMnesia
+  alias Translator.Embed
 
   def name(), do: "Translate Message"
 
@@ -19,26 +19,15 @@ defmodule Bot.Commands.Message.Translate do
     embed =
       case UserPrefsMnesia.get_preferred(discord_user.id) do
         nil ->
-          %Embed{}
-          |> Embed.put_color(0xC01C28)
-          |> Embed.put_title("Your language has not been set yet.")
-          |> Embed.put_description("Please use the `/set_language` command to set your language.")
+          Embed.error(
+            "Your language has not been set yet.",
+            "Please use the `/set_language` command to set your language."
+          )
 
         language ->
-          {:ok,
-           %{
-             "translatedText" => translated,
-             "detectedLanguage" => %{"language" => source}
-           }} = Translator.translate(message, language)
+          {:ok, resp} = Translator.translate(message, language)
 
-          sourcefull = Translator.Languages.get(source)
-          userfull = Translator.Languages.get(language)
-
-          %Embed{}
-          |> Embed.put_color(0x3498DB)
-          |> Embed.put_description(
-            "> #{translated}\nFrom #{sourcefull} (#{String.upcase(source)}) To #{userfull} (#{String.upcase(language)})"
-          )
+          Embed.translation(message, resp, language, discord_user)
       end
 
     [

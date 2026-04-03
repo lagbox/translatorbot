@@ -36,13 +36,12 @@ defmodule Bot.Commands.Slash.EightBall do
   def command(interaction) do
     [%{name: "message", value: question}] = interaction.data.options
 
-    embed =
-      %Embed{}
-      |> Embed.put_color(0x2EC27E)
-      |> Embed.put_description("> #{question}\n **🎱 #{Enum.random(@responses)} **")
-
     [
-      embeds: [embed]
+      embeds: [
+        %Embed{}
+        |> Embed.put_color(0x2EC27E)
+        |> Embed.put_description("> #{question}\n **🎱 #{Enum.random(@responses)} **")
+      ]
     ]
   end
 

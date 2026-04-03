@@ -1,7 +1,7 @@
 defmodule Bot.Commands.Slash.Translate do
   @behaviour Nosedrum.ApplicationCommand
 
-  alias Translator.UserPrefsMnesia
+  alias Translator.Persistence.UserPrefsMnesia
 
   @impl true
   def type(), do: :slash

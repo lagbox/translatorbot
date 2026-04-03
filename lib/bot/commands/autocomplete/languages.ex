@@ -1,5 +1,5 @@
 defmodule Bot.Commands.Autocomplete.Languages do
-  alias Translator.LanguageSearch
+  alias Translator.Language.Search
   alias Bot.Commands.Autocomplete.Helpers
 
   def handle(interaction) do
@@ -15,7 +15,7 @@ defmodule Bot.Commands.Autocomplete.Languages do
         fn {k, v} -> %{"name" => v, "code" => k} end
       )
 
-    choices = LanguageSearch.search(languages, query, user_id)
+    choices = Search.search(languages, query, user_id)
 
     Nostrum.Api.create_interaction_response(interaction, %{
       type: 8,
