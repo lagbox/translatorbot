@@ -5,14 +5,7 @@ defmodule Translator.LibreTranslate do
   def translate(text, target, opts \\ []) do
     source = Keyword.get(opts, :source, @default_source)
 
-    case Req.post(@url,
-           json: %{
-             q: text,
-             source: source,
-             target: target,
-             format: "text"
-           }
-         ) do
+    case Req.post(@url, json: %{q: text, source: source, target: target, format: "text"}) do
       {:ok, %{status: 200, body: body}} ->
         {:ok,
          %{
@@ -27,10 +20,4 @@ defmodule Translator.LibreTranslate do
         {:error, reason}
     end
   end
-
-  defp get_detected_lang(%{"detectedLanguage" => %{"language" => lang}})
-       when is_binary(lang),
-       do: lang
-
-  defp get_detected_lang(_), do: "auto"
 end

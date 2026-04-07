@@ -25,14 +25,14 @@ defmodule Bot.Translation.Orchestrator do
 
       case send_translation(reaction, message, result, target_lang, user) do
         {:ok, reply} ->
-          remove_user_reaction(reaction)
           MessageLifecycle.schedule_delete(reply)
+          remove_user_reaction(reaction)
 
-        _ ->
-          :ignore
+        {:error, _} ->
+          error(reaction)
       end
     else
-      _ -> error(reaction)
+      _ -> :ignore
     end
   end
 
@@ -72,6 +72,10 @@ defmodule Bot.Translation.Orchestrator do
   end
 
   defp error(reaction) do
-    Message.create(reaction.channel_id, content: "❌ Translation failed.")
+    Message.create(
+      reaction.channel_id,
+      content: "❌ Translation failed.",
+      message_reference: %{message_id: reaction.message_id}
+    )
   end
 end
