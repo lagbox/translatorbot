@@ -150,6 +150,15 @@ defmodule Translator.Language.Flags do
     end
   end
 
+  def code_for_flag(flag) do
+    case codes_for_flag(flag) do
+      [head | _] -> head
+      _ -> nil
+    end
+  end
+
+  # def code_for_flag(flag), do: {:ok, hd(codes_for_flag(flag))}
+
   # multi-flag string → merged languages
   def codes_for_any_flag(flag_string) do
     flag_string

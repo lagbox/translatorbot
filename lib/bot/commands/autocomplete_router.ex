@@ -7,7 +7,7 @@ defmodule Bot.Commands.AutocompleteRouter do
     "set_language" => Languages
   }
 
-  def handle(interaction) do
+  def handle_interaction(interaction) do
     command = interaction.data.name
 
     case Map.get(@routes, command) do

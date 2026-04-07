@@ -53,11 +53,8 @@ defmodule Translator.Languages do
   defp load_and_cache do
     langs =
       case Translator.API.languages() do
-        {:ok, langs} ->
-          Enum.map(langs, fn x -> {x["code"], x["name"]} end)
-
-        _ ->
-          []
+        {:ok, langs} -> Enum.map(langs, fn x -> {x["code"], x["name"]} end)
+        _ -> []
       end
       |> Enum.into(%{})
 

@@ -43,14 +43,14 @@ defmodule Bot.Commands.Slash.Translate do
 
     text = get_opt(opts, "text")
     target = get_opt(opts, "target")
-    source = get_opt(opts, "source")
+    source = get_opt(opts, "source") || "auto"
 
     user_id = interaction.user.id
 
     # UserPrefsMnesia.bump_usage(user_id, source)
     UserPrefsMnesia.bump_usage(user_id, target)
 
-    case Translator.translate(text, target, source) do
+    case Translator.translate(text, target, source: source) do
       {:error, _} ->
         [
           content: "❌ Translation failed",
@@ -59,7 +59,7 @@ defmodule Bot.Commands.Slash.Translate do
 
       {:ok, result} ->
         [
-          content: "🌐 **#{source} → #{target}**\n> #{result["translatedText"]}"
+          content: "🌐 **#{source} → #{target}**\n> #{result.translated}"
         ]
     end
   end

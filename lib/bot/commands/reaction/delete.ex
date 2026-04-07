@@ -1,4 +1,6 @@
 defmodule Bot.Commands.Reaction.Delete do
+  @behaviour Bot.Commands.Reaction.Handler
+
   @emoji "❌"
 
   def match?(%{emoji: %{name: @emoji}}), do: true

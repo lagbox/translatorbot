@@ -40,7 +40,7 @@ defmodule Bot.Commands.Slash.EightBall do
       embeds: [
         %Embed{}
         |> Embed.put_color(0x2EC27E)
-        |> Embed.put_description("> #{question}\n **🎱 #{Enum.random(@responses)} **")
+        |> Embed.put_description("> #{question}\n **🎱 #{Enum.random(@responses)}**")
       ]
     ]
   end

@@ -6,10 +6,14 @@ defmodule Bot.Commands.ReactionRouter do
   ]
 
   def handle(reaction) do
-    Enum.each(@handlers, fn mod ->
+    # Enum.each(@handlers, fn mod ->
+    # 1 handler per reaction
+    Enum.find_value(@handlers, fn mod ->
       if function_exported?(mod, :match?, 1) and mod.match?(reaction) do
         mod.handle(reaction)
+        # 1 handler per reaction
+        true
       end
-    end)
+    end) || :ignore
   end
 end

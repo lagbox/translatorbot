@@ -2,16 +2,21 @@ defmodule Bot.Core.CommandHandler do
   use Nostrum.Consumer
   require Logger
 
+  alias Bot.Commands.AutocompleteRouter
+  alias Bot.Commands.InteractionRouter
   alias Bot.Core.ApplicationCommandLoader
   alias Nosedrum.Storage.Dispatcher
-  alias Bot.Commands.AutocompleteRouter
 
   def handle_event({:READY, _, _}), do: ApplicationCommandLoader.load_all()
 
   def handle_event({:INTERACTION_CREATE, interaction, _}) do
     case interaction.type do
-      4 -> AutocompleteRouter.handle(interaction)
-      3 -> Bot.Commands.ReactionTranslation.handle_interaction(interaction)
+      # Autocomplete
+      4 -> AutocompleteRouter.handle_interaction(interaction)
+      # Message Component
+      3 -> InteractionRouter.handle_interaction(interaction)
+      # Application Command, Ping, Modal Submit
+      # Nosedrum Handler
       _ -> Dispatcher.handle_interaction(interaction)
     end
   end
