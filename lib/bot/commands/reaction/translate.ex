@@ -12,11 +12,11 @@ defmodule Bot.Commands.Reaction.Translate do
   def match?(_), do: false
 
   def handle(%{emoji: %{name: emoji}} = reaction) do
-    case Flags.codes_for_flag(emoji) do
-      [lang | _] ->
+    case Flags.primary_language(emoji) do
+      {:ok, lang} ->
         Orchestrator.translate_from_reaction(reaction, lang)
 
-      _ ->
+      :error ->
         :ignore
     end
   end
