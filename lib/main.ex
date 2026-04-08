@@ -9,6 +9,7 @@ defmodule Application.Main do
     children = [
       Bot.Core.CommandHandler,
       Nosedrum.Storage.Dispatcher,
+      Translator.InFlight,
       Translator.Languages,
       Translator.System.Cooldown,
       Translator.System.MessageLifecycle

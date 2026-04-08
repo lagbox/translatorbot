@@ -22,19 +22,21 @@ defmodule Translator do
     source = Keyword.get(opts, :source, @default_source)
     cache_key = {text, target, source}
 
-    case TranslationCache.get(cache_key) do
-      nil ->
-        case LibreTranslate.translate(text, target, source: source) do
-          {:ok, result} ->
-            TranslationCache.put(cache_key, result)
-            {:ok, result}
+    Translator.InFlight.run(cache_key, fn ->
+      case TranslationCache.get(cache_key) do
+        nil ->
+          case LibreTranslate.translate(text, target, source: source) do
+            {:ok, result} ->
+              TranslationCache.put(cache_key, result)
+              {:ok, result}
 
-          error ->
-            error
-        end
+            error ->
+              error
+          end
 
-      cached ->
-        {:ok, cached}
-    end
+        cached ->
+          {:ok, cached}
+      end
+    end)
   end
 end
