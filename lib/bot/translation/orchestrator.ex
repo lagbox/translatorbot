@@ -23,9 +23,9 @@ defmodule Bot.Translation.Orchestrator do
       user = DiscordUser.fetch(user_id)
       UserPrefsMnesia.bump_usage(user_id, target_lang)
 
-      case send_translation(reaction, message, result, target_lang, user) do
+      case send_translation(reaction, result, target_lang, user) do
         {:ok, reply} ->
-          MessageLifecycle.schedule_delete(reply)
+          MessageLifecycle.schedule_delete(reply, user_id)
           remove_user_reaction(reaction)
 
         {:error, _} ->
@@ -40,8 +40,8 @@ defmodule Bot.Translation.Orchestrator do
 
   defp valid_message?(message), do: String.trim(message.content) != ""
 
-  defp send_translation(reaction, message, result, lang, user) do
-    embed = TranslationEmbed.build(message, result, lang, user, reaction.emoji.name)
+  defp send_translation(reaction, result, lang, user) do
+    embed = TranslationEmbed.build(result, lang, user, emoji: reaction.emoji.name)
 
     Message.create(
       reaction.channel_id,

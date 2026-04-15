@@ -4,6 +4,7 @@ defmodule Bot.Commands.AutocompleteRouter do
   @routes %{
     "Translate Message" => Languages,
     "translate" => Languages,
+    "translate_self" => Languages,
     "set_language" => Languages
   }
 

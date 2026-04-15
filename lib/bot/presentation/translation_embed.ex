@@ -4,10 +4,13 @@ defmodule Bot.Presentation.TranslationEmbed do
 
   @embed_color 0x5865F2
 
-  def build(_message, %{translated: t, detected: s}, target, user, emoji) do
+  def build(%{translated: translated, detected: source}, target, user, opts \\ []) do
+    opts = Keyword.merge([emoji: "Command"], opts)
+    emoji = opts[:emoji]
+
     %{
       color: @embed_color,
-      description: "#{Languages.get(s)} ➤ #{Languages.get(target)}\n> #{t}",
+      description: "#{Languages.get(source)} ➤ #{Languages.get(target)}\n> *#{translated}*",
       footer: %{
         text: "#{DiscordUser.display_name(user)} → #{emoji}",
         icon_url: avatar_url(user)
@@ -16,26 +19,16 @@ defmodule Bot.Presentation.TranslationEmbed do
     }
   end
 
-  def components(user_id, _lang) do
-    [
-      %{
-        type: 1,
-        components: [
-          %{
-            type: 2,
-            style: 4,
-            label: "Delete",
-            custom_id: "delete:#{user_id}"
-          },
-          %{
-            type: 2,
-            style: 1,
-            label: "Pin",
-            custom_id: "pin:#{user_id}"
-          }
-        ]
-      }
-    ]
+  def components(_user_id, _lang) do
+    []
+  end
+
+  def error(title, description) do
+    %{
+      color: 0xC01C28,
+      title: title,
+      description: description
+    }
   end
 
   defp avatar_url(user) do
