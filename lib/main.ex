@@ -6,7 +6,10 @@ defmodule Application.Main do
 
     Translator.Cache.TranslationCache.init()
 
+    :persistent_term.put(:bot_start_time, System.monotonic_time(:millisecond))
+
     children = [
+      Bot.Commands.Registry,
       Bot.Core.CommandHandler,
       Nosedrum.Storage.Dispatcher,
       Translator.InFlight,

@@ -57,6 +57,7 @@ defmodule Bot.Core.ApplicationCommandLoader do
         )
 
       _ ->
+        Bot.Commands.Registry.refresh(server_id)
         Logger.debug("Successfully registered application commands to #{server_id}")
     end
   end
