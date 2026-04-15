@@ -1,7 +1,7 @@
 defmodule Bot.Commands.ReactionRouter do
   @handlers [
     Bot.Commands.Reaction.Delete,
-    Bot.Commands.Reaction.PinMessage,
+    Bot.Commands.Reaction.Pin,
     Bot.Commands.Reaction.Translate
   ]
 

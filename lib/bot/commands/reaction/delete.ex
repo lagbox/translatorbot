@@ -1,15 +1,14 @@
 defmodule Bot.Commands.Reaction.Delete do
   @behaviour Bot.Commands.Reaction.Handler
 
-  @emoji "❌"
+  alias Translator.System.MessageLifecycle
+
+  @emoji "🗑️"
 
   def match?(%{emoji: %{name: @emoji}}), do: true
   def match?(_), do: false
 
-  def handle(_reaction) do
-    # only message created by bot
-    #   only the person who caused the interaction can delete
-
-    # Bot.Commands.ReactionTranslation.handle_delete_reaction(reaction)
+  def handle(reaction) do
+    MessageLifecycle.delete_if_owner(reaction.message_id, reaction.user_id)
   end
 end
